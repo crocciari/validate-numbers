@@ -1,0 +1,101 @@
+
+<input type="text" class="price-input">
+<br>
+<input type="text" class="price-input-negative" data="5">
+
+<script>
+    
+function getAttribute(element,attribute,valueDefault="") {
+    if (element.hasAttribute(attribute)) {
+        return element.getAttribute(attribute);
+    }
+    return valueDefault;
+}
+    
+function validatePriceInput(input) {
+    
+  const decimalMax = getAttribute(input,'data',2);
+    
+  var decimalCount = 0;
+
+  for (var i = 0; i < input.value.length; i++) {
+    var character = input.value.charAt(i);
+
+    if (isNaN(parseFloat(character)) && character !== ".") {
+      input.value = input.value.substring(0, i) + input.value.substring(i + 1);
+    }
+
+    if (character === ".") {
+      decimalCount++;
+    }
+
+    if (decimalCount > 1 || (character === "." && i === 0)) {
+      input.value = input.value.substring(0, i) + input.value.substring(i + 1);
+    }
+  }
+
+  if (input.value.indexOf(".") >= 0) {
+    var parts = input.value.split(".");
+    if (parts[1].length > decimalMax) {
+      input.value = parts[0] + "." + parts[1].substring(0, decimalMax);
+    }
+  }
+}
+
+function validatePriceInputNegative(input) {
+  
+  const decimalMax = getAttribute(input,'data',2);
+        
+  var decimalCount = 0;
+  
+  for (var i = 0; i < input.value.length; i++) {
+    var character = input.value.charAt(i);
+
+    if (character === "-") {
+        if( input.value.substring(0,1)==="-" ) {
+            input.value =input.value.substring(1, i) + input.value.substring(i + 1);
+        } else {
+            input.value = "-" + input.value.substring(0, i) + input.value.substring(i + 1);
+        }
+        character = "";
+    } else if (isNaN(parseFloat(character)) && character !== ".") {
+      input.value = input.value.substring(0, i) + input.value.substring(i + 1);
+    }
+
+    if (character === ".") {
+      decimalCount++;
+    }
+
+    if (decimalCount > 1 || (character === "." && i === 0)) {
+      input.value = input.value.substring(0, i) + input.value.substring(i + 1);
+    }
+  }
+  
+
+  if (input.value.indexOf(".") >= 0) {
+    var parts = input.value.split(".");
+    if (parts[1].length > decimalMax) {
+      input.value = parts[0] + "." + parts[1].substring(0, decimalMax);
+    }
+  }
+
+}
+
+
+var priceInputs = document.getElementsByClassName("price-input");
+for (var i = 0; i < priceInputs.length; i++) {
+  priceInputs[i].addEventListener("input", function (event) {
+    validatePriceInput(this);
+  });
+}
+
+
+var priceInputsNegative = document.getElementsByClassName("price-input-negative");
+for (var i = 0; i < priceInputsNegative.length; i++) {
+  priceInputsNegative[i].addEventListener("input", function (event) {
+    validatePriceInputNegative(this);
+  });
+}
+
+
+</script>
